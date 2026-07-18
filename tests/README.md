@@ -1,6 +1,6 @@
-# Konveyor Test Suite
+# legacylens Test Suite
 
-This directory contains the test suite for the Konveyor project.
+This directory contains the test suite for the legacylens project.
 
 ## Directory Structure
 

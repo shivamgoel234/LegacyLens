@@ -1,318 +1,295 @@
-# 🧠 Konveyor: AI-Powered Knowledge Transfer Agent
+<div align="center">
 
-> A lone engineer stands at the mouth of a shadowy codebase, torch flickering. By their side floats Konveyor—a spectral AI guide, whispering ancient commit lore, sketching system blueprints mid-air, and illuminating architectural runes hidden in legacy stone.
->
-> This isn't onboarding. It's a quest.
->
-> Konveyor turns tangled handovers into guided journeys—not blindfolded sprints through spaghetti.
+# 🔍 LegacyLens
 
-![Explorer and AI in Ancient Cavern](Explorer%20and%20AI%20in%20Ancient%20Cavern.png)
+### **AI-Powered Organizational Memory for Engineering Teams**
 
-## 🌟 The Problem: Broken Engineer Onboarding
+*Stop losing institutional knowledge when employees leave.*
+*LegacyLens captures, connects, and preserves the knowledge that lives in people's heads.*
 
-Every organization faces the same painful reality: **software engineer onboarding is fundamentally broken**. This isn't just an inconvenience—it's a $30,000+ cost per engineer in:
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Django](https://img.shields.io/badge/Django-6.0-092E20?style=for-the-badge&logo=django&logoColor=white)](https://djangoproject.com)
+[![OpenAI](https://img.shields.io/badge/LLM-OpenAI_Compatible-412991?style=for-the-badge&logo=openai&logoColor=white)](https://openai.com)
+[![Supermemory](https://img.shields.io/badge/Memory-Supermemory-FF6B6B?style=for-the-badge)](https://supermemory.ai)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-- 💸 Lost productivity during 1-3 months of ramp-up
-- ⏱️ Senior engineer time diverted to repetitive knowledge transfer
-- 📉 Delayed project contributions and missed deadlines
-- 😓 Frustration and cognitive overload for new hires
+<br/>
 
-The root causes are universal:
-- 📚 Scattered, outdated, or non-existent documentation
-- 🧩 Knowledge silos and tribal information
-- 🗺️ Overwhelming or unstructured onboarding experiences
-- 🔍 Difficulty understanding complex, undocumented codebases
-- 👥 Limited access to mentorship from senior engineers
+<img src="https://img.shields.io/badge/🏆_LocalHack_Hackathon-2026-gold?style=for-the-badge" alt="Hackathon Badge"/>
 
-## 💡 The Solution: Konveyor
+---
 
-Konveyor is an AI-powered knowledge transfer agent designed specifically for software engineer onboarding. Unlike generic AI assistants, Konveyor is purpose-built to understand engineering context, codebase architecture, and the unique challenges of technical onboarding.
+**[Features](#-features) · [Demo](#-quick-demo) · [Architecture](#-architecture) · [Setup](#-setup) · [API Reference](#-api-reference)**
 
-Built on Microsoft's Semantic Kernel framework and Azure AI services, Konveyor transforms existing infrastructure into a powerful knowledge transfer agent that:
+</div>
 
-1. **Answers questions about documentation** with proper context and citations
-2. **Explains code snippets** with architectural insights and design decisions
-3. **Identifies knowledge gaps** and creates personalized learning paths
+<br/>
 
-## 🛠️ Key Features
+## 🎯 The Problem
 
-### 📚 Documentation Navigator
-- Searches and retrieves relevant documentation with context awareness
-- Preprocesses queries to understand onboarding-related questions
-- Formats responses with proper source citations
-- Maintains conversation context for natural follow-up questions
+> **67% of organizational knowledge walks out the door** when an employee leaves.
+> — *Harvard Business Review*
 
-### 💻 Code Understanding
-- Parses and explains code snippets with language detection
-- Analyzes code structure and organizational patterns
-- Generates clear explanations with syntax highlighting
-- Connects code explanations to architectural context
+Engineering teams lose critical context every time someone departs:
+- 🧠 **Tribal knowledge** — *"Why did we choose PostgreSQL over MySQL?"*
+- 🔧 **Undocumented processes** — *"How do we actually rollback a deployment?"*
+- 🤝 **Ownership maps** — *"Who knows how the payment service really works?"*
+- ⚡ **Decision history** — *"What did we try before this approach?"*
 
-### 🧩 Knowledge Gap Analyzer
-- Maps questions to a taxonomy of knowledge areas
-- Tracks user confidence across different domains
-- Identifies potential knowledge gaps
-- Suggests relevant resources for learning
+**LegacyLens** solves this by building a living **knowledge graph** from your documentation, extracting facts using AI, detecting gaps, and generating targeted exit interview questions — all before it's too late.
 
-### 💬 Slack Integration
-- Seamless interaction through familiar chat interface
-- Thread support for organized conversations
-- Rich message formatting for code and technical content
-- Slash commands for specialized functionality
+<br/>
+
+## ✨ Features
+
+### 📊 Interactive Knowledge Graph
+Visualize your entire organization's technical knowledge as an interactive D3.js force-directed graph. See how architecture decisions connect, which facts supersede others, and where contradictions exist.
+
+### 🤖 AI-Powered Q&A (RAG)
+Ask natural language questions and get answers grounded in your actual documentation. Powered by **Retrieval-Augmented Generation** using Supermemory for semantic search and any OpenAI-compatible LLM.
+
+### 📄 Smart Document Ingestion
+Upload architecture docs, runbooks, or decision records. LegacyLens automatically:
+- Extracts structured facts with categories and confidence scores
+- Detects contradictions between old and new information
+- Identifies which facts supersede others
+
+### ⚠️ Knowledge Gap Detection
+AI analyzes your knowledge base and surfaces what's **missing** — rollback procedures without documentation, systems without backup owners, decisions without rationale.
+
+### 🎤 Exit Interview Generator
+When an employee is departing, LegacyLens generates **targeted interview questions** based on their expertise areas to capture undocumented tribal knowledge before they leave.
+
+### 🎓 Onboarding Plan Generator
+For new joiners, automatically creates personalized onboarding plans based on their role and available organizational knowledge.
+
+### 👥 Employee Knowledge Tracking
+Track which employees own which knowledge domains. See who's departing, who's onboarding, and where knowledge transfer gaps exist.
+
+<br/>
 
 ## 🏗️ Architecture
 
-Konveyor is built on a modern, modular architecture:
-
-- **Microsoft Semantic Kernel** for AI orchestration and skill management
-- **Azure OpenAI** for advanced language understanding and generation
-- **Azure Cognitive Search** for semantic document retrieval
-- **Azure Key Vault** for secure credential management
-- **Slack Bot Framework** for user interaction
-
-The system follows an agent-based architecture with specialized skills that can be invoked based on user needs. A memory system maintains conversation context and tracks user knowledge.
-
----
-### Module Structure
-
-
 ```
-konveyor/
-├─ apps/
-│  ├─ documents/       # Document ingestion, parsing, chunking
-│  ├─ search/          # Semantic search and indexing
-│  ├─ rag/             # RAG workflows and conversation management
-│  └─ bot/             # Bot Framework and Slack integration
-├─ core/
-│  ├─ azure_utils/     # Azure service clients and configuration
-│  ├─ conversation/    # Conversation storage and management
-│  ├─ documents/       # Core document processing
-│  └─ generation/      # Semantic Kernel and memory configuration
-└─ skills/
-   ├─ documentation_navigator/  # Documentation search and retrieval
-   ├─ code_understanding/       # Code parsing and explanation
-
-   └─ common/                   # Shared skill utilities
-```
-```mermaid
-graph TD
-    subgraph "Complete CI/CD Pipeline"
-        pipeline[complete-pipeline.yml] --> |calls| branch[commit-conventions.yml]
-        branch --> |if success/skipped| quality[code-quality.yml]
-        quality --> |if success/skipped| tests[integration-tests.yml]
-        tests --> |if tests pass| deploy[build-image.yml]
-        tests --> |if tests pass| infra[infra-test.yml]
-    end
-
-    subgraph "Independent Workflows"
-        branch_ind[commit-conventions.yml] --> |PR/Push| validate[Validate Branch Naming]
-
-        quality_ind[code-quality.yml] --> |PR/Push| lint[Lint Python Code]
-        quality_ind --> |PR/Push| coverage[Test Coverage]
-
-        tests_ind[integration-tests.yml] --> |PR/Push/Manual| run_tests[Run Tests]
-        tests_ind --> |workflow_dispatch| test_options[Test Options]
-        test_options --> run_tests
-
-        deploy_ind[build-image.yml] --> |Tag/Manual| build[Build Docker Image]
-        build --> push[Push to GHCR]
-        push --> deploy_app[Deploy to Azure App Service]
-
-        infra_ind[infra-test.yml] --> |Tag/Manual| plan[Terraform Plan]
-        plan --> apply[Terraform Apply]
-    end
-
-    subgraph "Triggers"
-        pr[Pull Request] --> branch_ind
-        pr --> quality_ind
-        pr --> tests_ind
-        pr --> pipeline
-
-        push_main[Push to main/dev] --> branch_ind
-        push_main --> quality_ind
-        push_main --> tests_ind
-        push_main --> pipeline
-
-        tag_version[Version Tag] --> deploy_ind
-        tag_infra[Infra Tag] --> infra_ind
-
-        manual[Manual Workflow Dispatch] --> pipeline
-        manual --> tests_ind
-        manual --> deploy_ind
-        manual --> infra_ind
-    end
+┌─────────────────────────────────────────────────────────────┐
+│                     LegacyLens Web UI                       │
+│  Dashboard │ Knowledge Graph │ Chat │ Docs │ Employees │ Gaps│
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+              ┌────────────┴────────────┐
+              │     Django REST API     │
+              │   (DRF + APIView)       │
+              └────────┬───────┬────────┘
+                       │       │
+          ┌────────────┘       └────────────┐
+          ▼                                 ▼
+┌──────────────────┐              ┌──────────────────┐
+│  KnowledgeAgent  │              │  MemoryService   │
+│  (LLM Brain)     │              │  (RAG Layer)     │
+│                  │              │                  │
+│ • Fact Extraction│              │ • Semantic Search│
+│ • Gap Detection  │              │ • Doc Storage    │
+│ • Contradictions │              │ • Profiles       │
+│ • Interview Q's  │              │ • Container Tags │
+│ • Onboarding     │              │                  │
+└────────┬─────────┘              └────────┬─────────┘
+         │                                 │
+         ▼                                 ▼
+┌──────────────────┐              ┌──────────────────┐
+│  OpenAI-Compat   │              │   Supermemory    │
+│  LLM Provider    │              │   Local Server   │
+│                  │              │                  │
+│ • Vercel Gateway │              │ • Vector Embeddings│
+│ • NVIDIA NIM     │              │ • Hybrid Search  │
+│ • OpenAI Direct  │              │ • Local Storage  │
+│ • Ollama         │              │ • Encrypted DB   │
+└──────────────────┘              └──────────────────┘
 ```
 
-Key components:
-- **konveyor/apps/documents**: Handles document ingestion, parsing, chunking, and storage
-- **konveyor/apps/search**: Manages semantic search, batch indexing, and search endpoints
-- **konveyor/apps/rag**: Orchestrates RAG workflows and conversation management
-- **konveyor/apps/bot**: Integrates with Slack and Bot Framework for chat interfaces
-- **konveyor/core**: Contains shared utilities, Azure adapters, and core business logic
-- **konveyor/skills**: Houses Semantic Kernel skills for specialized AI capabilities
+<br/>
 
-### Agent Workflow
-
-```mermaid
-sequenceDiagram
-    participant User as User (Slack)
-    participant Bot as Bot Framework
-    participant Orchestrator as Agent Orchestrator
-    participant Skill as Semantic Kernel Skill
-    participant Memory as Memory System
-    participant Azure as Azure Services
-
-    User->>Bot: Send message
-    Bot->>Orchestrator: Process message
-    Orchestrator->>Orchestrator: Analyze intent
-    Orchestrator->>Skill: Route to appropriate skill
-    Skill->>Memory: Retrieve context
-    Skill->>Azure: Call required services
-    Azure-->>Skill: Return results
-    Skill->>Memory: Update context
-    Skill-->>Orchestrator: Return response
-    Orchestrator-->>Bot: Format response
-    Bot-->>User: Send response
-```
-
-### CI/CD Pipeline
-
-```mermaid
-graph TD
-    subgraph "Complete CI/CD Pipeline"
-        pipeline[complete-pipeline.yml] --> |calls| branch[commit-conventions.yml]
-        branch --> |if success/skipped| quality[code-quality.yml]
-        quality --> |if success/skipped| tests[integration-tests.yml]
-        tests --> |if tests pass| deploy[build-image.yml]
-        tests --> |if tests pass| infra[infra-test.yml]
-    end
-
-    subgraph "Independent Workflows"
-        branch_ind[commit-conventions.yml] --> |PR/Push| validate[Validate Branch Naming]
-
-        quality_ind[code-quality.yml] --> |PR/Push| lint[Lint Python Code]
-        quality_ind --> |PR/Push| coverage[Test Coverage]
-
-        tests_ind[integration-tests.yml] --> |PR/Push/Manual| run_tests[Run Tests]
-        tests_ind --> |workflow_dispatch| test_options[Test Options]
-        test_options --> run_tests
-
-        deploy_ind[build-image.yml] --> |Tag/Manual| build[Build Docker Image]
-        build --> push[Push to GHCR]
-        push --> deploy_app[Deploy to Azure App Service]
-
-        infra_ind[infra-test.yml] --> |Tag/Manual| plan[Terraform Plan]
-        plan --> apply[Terraform Apply]
-    end
-
-    subgraph "Triggers"
-        pr[Pull Request] --> branch_ind
-        pr --> quality_ind
-        pr --> tests_ind
-        pr --> pipeline
-
-        push_main[Push to main/dev] --> branch_ind
-        push_main --> quality_ind
-        push_main --> tests_ind
-        push_main --> pipeline
-
-        tag_version[Version Tag] --> deploy_ind
-        tag_infra[Infra Tag] --> infra_ind
-
-        manual[Manual Workflow Dispatch] --> pipeline
-        manual --> tests_ind
-        manual --> deploy_ind
-        manual --> infra_ind
-    end
-```
-
-## 🚀 The Impact
-
-Konveyor transforms software engineer onboarding from a fragmented, high-cost process into a streamlined, AI-augmented experience:
-
-- ⏱️ **Reduces onboarding time by 30-50%**, saving organizations thousands of dollars per engineer
-- 🧠 **Frees senior engineers from repetitive knowledge transfer**, allowing them to focus on high-value work
-- 📈 **Accelerates time-to-productivity** for new hires, enabling faster project contributions
-- 😌 **Reduces cognitive overload** by providing just-in-time, contextual information
-- 🔄 **Enables self-service onboarding**, reducing dependency on human availability
-
-## 🌐 Why Konveyor is Different
-
-Unlike generic AI assistants, Konveyor is:
-
-1. **Purpose-built for software engineering onboarding**, not a general-purpose chatbot
-2. **Contextually aware** of organizational terminology, architecture, and code patterns
-3. **Integrated with existing tools** through Slack, meeting engineers where they work
-4. **Built on an agentic framework** with specialized tools for documentation, code, and knowledge gaps
-5. **Designed for both passive and active knowledge delivery**, adapting to different learning styles
-
-## 🔧 Getting Started
+## 🚀 Setup
 
 ### Prerequisites
 
-- Python 3.10+
-- Azure account with appropriate services
-- Slack workspace with admin privileges
+- **Python 3.11+**
+- **Node.js 18+** (for Supermemory)
+- An **OpenAI-compatible API key** (Vercel AI Gateway / NVIDIA NIM / OpenAI / Ollama)
 
-### Installation
+### 1. Clone & Install
 
-1. Clone the repository
-   ```bash
-   git clone https://github.com/yourusername/konveyor.git
-   cd konveyor
-   ```
+```bash
+git clone https://github.com/YOUR_USERNAME/legacylens.git
+cd legacylens
 
-2. Create a virtual environment
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# or: venv\Scripts\activate  # Windows
 
-3. Install dependencies
-   ```bash
-   pip install -r requirements/development.txt
-   ```
+# Install dependencies
+pip install -r requirements/base.txt
+```
 
-4. Set up environment variables
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
+### 2. Configure Environment
 
-5. Run migrations
-   ```bash
-   python manage.py migrate
-   ```
+```bash
+cp .env.example .env
+# Edit .env with your API keys
+```
 
-6. Start the development server
-   ```bash
-   python manage.py runserver
-   ```
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `OPENAI_API_KEY` | Your LLM API key | `vck_xxx` or `sk-xxx` |
+| `OPENAI_BASE_URL` | OpenAI-compatible endpoint | `https://ai-gateway.vercel.sh/v1` |
+| `OPENAI_MODEL` | Model identifier | `openai/gpt-4o-mini` |
+| `SUPERMEMORY_API_KEY` | Auto-generated on first run | `sm_xxx` |
+| `SUPERMEMORY_BASE_URL` | Supermemory server URL | `http://localhost:6767` |
 
-## 📸 Slack App Screenshots
+### 3. Start Supermemory (Memory Layer)
 
-### Konveyor Bot Interface
-![Slack Onboarding Assistant Screenshot - Placeholder](Konveyor-bot%20Interface.jpeg) Interface.jpeg)
+```bash
+# In a separate terminal (WSL/Linux recommended)
+npx supermemory local
+# Copy the API key from output to your .env file
+```
 
+### 4. Initialize Database & Run
 
-## 🔮 Future Enhancements
+```bash
+python manage.py migrate
+python manage.py runserver
+```
 
-- Persistent memory system using Azure Cognitive Search
-- Multi-tenant onboarding capabilities
-- Additional skills for specialized knowledge domains
-- Integration with Microsoft Teams
-- Analytics dashboard for knowledge gap visualization
-- Automated knowledge base updates
+Open **http://localhost:8000** — LegacyLens is running! 🎉
+
+### 5. Seed Demo Data (Optional)
+
+```bash
+# Upload sample documents
+# Go to Documents page → Upload architecture_v1.md and architecture_v2.md from demo_docs/
+
+# Extract facts from documents
+python extract_facts.py
+
+# Generate relationships between facts
+python gen_relationships.py
+
+# Add demo employees
+python seed_employees.py
+```
+
+<br/>
+
+## 📡 API Reference
+
+### Documents
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/documents/upload/` | Upload a document (PDF, DOCX, MD, TXT) |
+| `GET` | `/api/documents/list/` | List all documents |
+| `DELETE` | `/api/documents/<uuid>/delete/` | Delete a document |
+
+### Knowledge Graph
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/knowledge/facts/` | List all facts |
+| `POST` | `/api/knowledge/facts/` | Create a fact |
+| `GET` | `/api/knowledge/graph/data/` | Graph nodes + edges (D3.js) |
+| `POST` | `/api/knowledge/search/` | Semantic search |
+
+### AI Agent
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/knowledge/agent/chat/` | Ask LegacyLens (RAG Q&A) |
+| `POST` | `/api/knowledge/agent/extract/` | Extract facts from text |
+| `POST` | `/api/knowledge/agent/gaps/detect/` | Detect knowledge gaps |
+| `POST` | `/api/knowledge/agent/onboarding/` | Generate onboarding plan |
+
+### Employees
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET/POST` | `/api/knowledge/employees/` | List / Create employees |
+| `GET/PUT` | `/api/knowledge/employees/<uuid>/` | Get / Update employee |
+| `POST` | `/api/knowledge/employees/<uuid>/interview/` | Exit interview questions |
+
+### Knowledge Gaps
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/knowledge/gaps/` | List all gaps |
+| `POST` | `/api/knowledge/gaps/<uuid>/resolve/` | Resolve a gap |
+
+<br/>
+
+## 🛠️ Tech Stack
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **Backend** | Django 6.0 + DRF | REST API, ORM, Admin |
+| **Frontend** | Vanilla JS + D3.js | Interactive UI, Knowledge Graph |
+| **LLM** | OpenAI-compatible API | Fact extraction, Q&A, Gap detection |
+| **Memory** | Supermemory (Local) | Vector embeddings, Semantic search |
+| **Database** | SQLite (dev) | Structured data storage |
+| **Styling** | Custom CSS | Dark-mode premium UI |
+
+<br/>
+
+## 📁 Project Structure
+
+```
+legacylens/
+├── core/
+│   ├── agent/
+│   │   ├── knowledge_agent.py   # LLM orchestrator (extract, chat, gaps)
+│   │   └── prompts.py           # All LLM prompt templates
+│   └── memory/
+│       ├── client.py            # Supermemory SDK client
+│       └── service.py           # High-level memory operations
+├── apps/
+│   ├── knowledge/               # Facts, Gaps, Employees, Relationships
+│   ├── documents/               # Document upload & ingestion
+│   └── core/                    # Web UI views
+├── settings/                    # Django settings (dev/prod/test)
+├── static/
+│   ├── css/legacylens.css       # Complete design system
+│   └── js/                      # Chat, Graph, Documents, Dashboard
+└── templates/                   # Django HTML templates
+    ├── dashboard.html
+    ├── knowledge_graph.html
+    ├── chat.html
+    ├── documents.html
+    ├── employees.html
+    └── gaps.html
+```
+
+<br/>
+
+## 🔌 Supported LLM Providers
+
+LegacyLens works with **any OpenAI-compatible API**:
+
+| Provider | Base URL | Free Tier |
+|----------|----------|-----------|
+| **Vercel AI Gateway** | `https://ai-gateway.vercel.sh/v1` | ✅ Yes |
+| **NVIDIA NIM** | `https://integrate.api.nvidia.com/v1` | ✅ Yes |
+| **OpenAI** | `https://api.openai.com/v1` | ❌ Paid |
+| **Ollama** (local) | `http://localhost:11434/v1` | ✅ Free |
+| **LM Studio** (local) | `http://localhost:1234/v1` | ✅ Free |
+
+<br/>
+
+## 📜 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+<br/>
+
+<div align="center">
 
 ---
 
-## 🏆 The Vision
+**Built with ❤️ for the LocalHost Hackathon 2026**
 
-Konveyor aims to transform software engineer onboarding from a fragmented, high-cost process into a streamlined, AI-augmented experience that empowers engineers to become productive, confident contributors in record time.
+*LegacyLens — Because organizational knowledge shouldn't walk out the door.*
 
-This isn't just about reducing costs—it's about creating a better onboarding experience for engineers and enabling organizations to unlock the full potential of their technical talent.
-
----
-
-Built with ❤️ for the Azure AI Hackathon
-
+</div>

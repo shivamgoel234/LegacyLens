@@ -9,10 +9,10 @@ from typing import Any
 
 import pytest
 
-from konveyor.core.formatters.factory import FormatterFactory
-from konveyor.core.formatters.interface import FormatterInterface
-from konveyor.core.formatters.markdown import MarkdownFormatter
-from konveyor.core.formatters.slack import SlackFormatter
+from legacylens.core.formatters.factory import FormatterFactory
+from legacylens.core.formatters.interface import FormatterInterface
+from legacylens.core.formatters.markdown import MarkdownFormatter
+from legacylens.core.formatters.slack import SlackFormatter
 
 
 def test_slack_formatter():

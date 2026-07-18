@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Knowledge Graph — LegacyLens{% endblock %}
+{% block page_title %}Knowledge Graph{% endblock %}
+
+{% block content %}
+<!-- Controls -->
+<div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap;">
+  <select id="filter-category" style="width:auto;padding:8px 32px 8px 12px;">
+    <option value="">All Categories</option>
+    <option value="architecture">Architecture</option>
+    <option value="process">Process</option>
+    <option value="tooling">Tooling</option>
+    <option value="domain">Domain</option>
+    <option value="decision">Decision</option>
+    <option value="ownership">Ownership</option>
+    <option value="onboarding">Onboarding</option>
+    <option value="tribal">Tribal</option>
+  </select>
+  <select id="filter-status" style="width:auto;padding:8px 32px 8px 12px;">
+    <option value="">All Statuses</option>
+    <option value="current">Current</option>
+    <option value="historical">Historical</option>
+    <option value="deprecated">Deprecated</option>
+    <option value="undocumented">Undocumented</option>
+  </select>
+  <button class="btn btn-secondary btn-sm" id="reset-graph">
+    <i data-lucide="rotate-ccw" style="width:14px;height:14px;"></i> Reset View
+  </button>
+  <span style="margin-left:auto;font-size:0.8rem;color:var(--text-muted);" id="graph-stats">Loading...</span>
+</div>
+
+<!-- Graph Container -->
+<div class="graph-container" id="knowledge-graph" style="min-height:600px;"></div>
+
+<!-- Legend -->
+<div class="graph-legend" style="display:flex;gap:16px;flex-wrap:wrap;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;margin-top:16px;">
+  <div class="legend-item"><div class="legend-dot" style="background:#3b82f6;"></div> Architecture</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6;"></div> Process</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#10b981;"></div> Tooling</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;"></div> Domain</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ef4444;"></div> Decision</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#06b6d4;"></div> Ownership</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#a855f7;"></div> Onboarding</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ec4899;"></div> Tribal</div>
+</div>
+
+<!-- Detail Panel (slide-in) -->
+<div class="detail-panel" id="detail-panel">
+  <div class="detail-panel-header">
+    <h3>Fact Details</h3>
+    <button class="btn btn-sm btn-secondary" onclick="document.getElementById('detail-panel').classList.remove('open')">
+      <i data-lucide="x" style="width:14px;height:14px;"></i>
+    </button>
+  </div>
+  <div class="detail-panel-body" id="detail-panel-body">
+    <p style="color:var(--text-muted);">Click a node to see details.</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/graph.js' %}"></script>
+{% endblock %}

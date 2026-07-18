@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Documents — LegacyLens{% endblock %}
+{% block page_title %}Documents{% endblock %}
+
+{% block content %}
+<!-- Upload Zone -->
+<div class="upload-zone" id="drop-zone" style="margin-bottom:32px;">
+  <div class="upload-icon"><i data-lucide="upload-cloud" style="width:48px;height:48px;"></i></div>
+  <div class="upload-title">Drag &amp; drop documents here</div>
+  <div class="upload-subtitle">Supported: PDF, DOCX, Markdown, TXT &mdash; max 50MB</div>
+  <div style="margin-top:16px;display:flex;gap:12px;justify-content:center;align-items:center;">
+    <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">
+      <i data-lucide="folder-open" style="width:16px;height:16px;"></i>
+      Browse Files
+    </button>
+    <input type="file" id="file-input" accept=".pdf,.docx,.md,.txt" style="display:none;" multiple>
+  </div>
+  <div id="upload-progress" style="display:none;margin-top:16px;width:100%;max-width:300px;">
+    <div style="background:var(--border);border-radius:100px;height:4px;overflow:hidden;">
+      <div id="progress-bar" style="height:100%;background:var(--accent-blue);width:0%;transition:width 0.3s;"></div>
+    </div>
+    <div id="upload-status" style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;text-align:center;"></div>
+  </div>
+</div>
+
+<!-- Documents List -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">Uploaded Documents ({{ documents|length }})</span>
+  </div>
+
+  {% if documents %}
+  <div class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Document</th>
+          <th>Type</th>
+          <th>Size</th>
+          <th>Status</th>
+          <th>Uploaded</th>
+          <th style="width:80px;text-align:center;">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="docs-table-body">
+        {% for doc in documents %}
+        <tr id="doc-row-{{ doc.id }}">
+          <td>
+            <div style="font-weight:500;color:var(--text-primary);">{{ doc.title }}</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">{{ doc.filename }}</div>
+          </td>
+          <td><span style="color:var(--text-secondary);font-size:0.8rem;">{{ doc.content_type }}</span></td>
+          <td>
+            {% if doc.size %}
+              <span style="color:var(--text-secondary);font-size:0.8rem;">
+                {% if doc.size > 1048576 %}{{ doc.size|filesizeformat }}
+                {% elif doc.size > 1024 %}{{ doc.size|divisibleby:1024 }} KB
+                {% else %}{{ doc.size }} B{% endif %}
+              </span>
+            {% else %}<span style="color:var(--text-muted);">—</span>{% endif %}
+          </td>
+          <td><span class="badge badge-{{ doc.status|lower }}">{{ doc.status }}</span></td>
+          <td><span style="color:var(--text-muted);font-size:0.8rem;">{{ doc.created_at|timesince }} ago</span></td>
+          <td style="text-align:center;">
+            <button class="btn btn-danger" style="padding:4px 10px;font-size:0.75rem;"
+                    onclick="deleteDocument('{{ doc.id }}')">
+              <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:48px;color:var(--text-muted);">
+    <i data-lucide="file-x" style="width:40px;height:40px;margin:0 auto 16px;display:block;opacity:0.5;"></i>
+    <p style="font-size:0.9rem;">No documents uploaded yet.</p>
+    <p style="font-size:0.8rem;margin-top:4px;">Drop a file above to start extracting knowledge.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/documents.js' %}"></script>
+{% endblock %}

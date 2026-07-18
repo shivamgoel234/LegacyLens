@@ -1,4 +1,4 @@
-# Konveyor API Documentation
+# legacylens API Documentation
 
 ## Endpoints
 
@@ -12,7 +12,7 @@ Returns the status of the API.
 ```json
 {
   "status": "ok",
-  "message": "Konveyor API is running",
+  "message": "legacylens API is running",
   "version": "0.1.0"
 }
 ```

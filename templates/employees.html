@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Employees — LegacyLens{% endblock %}
+{% block page_title %}Employees{% endblock %}
+
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+  <div class="filter-bar" style="margin-bottom:0;">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="active">Active</button>
+    <button class="filter-btn" data-filter="departing">Departing</button>
+    <button class="filter-btn" data-filter="departed">Departed</button>
+    <button class="filter-btn" data-filter="onboarding">Onboarding</button>
+  </div>
+  <button class="btn btn-primary" onclick="document.getElementById('add-modal').style.display='flex'">
+    <i data-lucide="user-plus" style="width:16px;height:16px;"></i>
+    Add Employee
+  </button>
+</div>
+
+{% if employees %}
+<div class="employees-grid" id="employees-grid">
+  {% for employee in employees %}
+  <div class="employee-card" data-status="{{ employee.status }}" id="emp-{{ employee.id }}">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+      <div>
+        <div class="emp-name">{{ employee.name }}</div>
+        <div class="emp-role">{{ employee.role }}{% if employee.department %} &middot; {{ employee.department }}{% endif %}</div>
+      </div>
+      <span class="badge badge-{{ employee.status }}">{{ employee.get_status_display }}</span>
+    </div>
+    {% if employee.expertise_areas %}
+    <div class="emp-tags">
+      {% for tag in employee.expertise_areas|slice:":5" %}
+        <span class="emp-tag">{{ tag }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <div style="margin-top:16px;display:flex;gap:8px;">
+      {% if employee.status == 'departing' %}
+      <button class="btn btn-sm btn-primary" onclick="startInterview('{{ employee.id }}', '{{ employee.name }}')">
+        <i data-lucide="mic" style="width:12px;height:12px;"></i> Interview
+      </button>
+      {% endif %}
+      {% if employee.status == 'onboarding' %}
+      <button class="btn btn-sm btn-primary" onclick="genOnboarding('{{ employee.id }}')">
+        <i data-lucide="graduation-cap" style="width:12px;height:12px;"></i> Onboarding Plan
+      </button>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div style="text-align:center;padding:64px;color:var(--text-muted);">
+  <i data-lucide="users" style="width:48px;height:48px;margin:0 auto 16px;display:block;opacity:0.4;"></i>
+  <p style="font-size:1rem;font-weight:500;margin-bottom:8px;">No employees yet</p>
+  <p style="font-size:0.85rem;">Add employees to track their knowledge and generate interview questions.</p>
+  <button class="btn btn-primary" style="margin-top:20px;" onclick="document.getElementById('add-modal').style.display='flex'">Add First Employee</button>
+</div>
+{% endif %}
+
+<!-- Add Employee Modal -->
+<div id="add-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;">
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:32px;width:100%;max-width:480px;">
+    <h3 style="margin-bottom:20px;font-size:1.1rem;">Add Employee</h3>
+    <form id="add-emp-form">
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">Full Name *</label>
+        <input type="text" name="name" required style="width:100%;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:0.9rem;">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">Email</label>
+        <input type="email" name="email" style="width:100%;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:0.9rem;">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+        <div>
+          <label style="display:block;font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">Role</label>
+          <input type="text" name="role" style="width:100%;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:0.9rem;">
+        </div>
+        <div>
+          <label style="display:block;font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">Department</label>
+          <input type="text" name="department" style="width:100%;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:0.9rem;">
+        </div>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">Status</label>
+        <select name="status" style="width:100%;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:0.9rem;">
+          <option value="active">Active</option>
+          <option value="departing">Departing</option>
+          <option value="onboarding">Onboarding</option>
+        </select>
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="display:block;font-size:0.8rem;color:var(--text-secondary);margin-bottom:4px;">Expertise (comma-separated)</label>
+        <input type="text" name="expertise" placeholder="e.g. Python, Kubernetes, AWS" style="width:100%;padding:10px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:0.9rem;">
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('add-modal').style.display='none'">Cancel</button>
+        <button type="submit" class="btn btn-primary">Add Employee</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.employee-card').forEach(card => {
+      card.style.display = (filter === 'all' || card.dataset.status === filter) ? '' : 'none';
+    });
+  });
+});
+
+// Add employee form
+document.getElementById('add-emp-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var form = e.target;
+  var expertise = form.expertise.value.trim();
+  var expertiseArr = expertise ? expertise.split(',').map(function(s) { return s.trim(); }) : [];
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/api/knowledge/employees/');
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('X-CSRFToken', getCsrfToken());
+  xhr.onload = function() {
+    var data = JSON.parse(xhr.responseText);
+    if (data.status === 'ok') {
+      showToast('Employee "' + data.data.name + '" added!', 'success');
+      document.getElementById('add-modal').style.display = 'none';
+      setTimeout(function() { location.reload(); }, 1000);
+    } else {
+      showToast('Failed: ' + (data.message || 'Unknown error'), 'error');
+    }
+  };
+  xhr.onerror = function() { showToast('Network error', 'error'); };
+  xhr.send(JSON.stringify({
+    name: form.name.value,
+    email: form.email.value,
+    role: form.role.value,
+    department: form.department.value,
+    status: form.status.value,
+    expertise_areas: expertiseArr
+  }));
+});
+
+// Exit interview
+function startInterview(empId, empName) {
+  var question = prompt('Start exit interview with ' + empName + '.\n\nAsk your first question (or leave empty to auto-generate):');
+  if (question === null) return;
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/api/knowledge/employees/' + empId + '/interview/');
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('X-CSRFToken', getCsrfToken());
+  xhr.onload = function() {
+    var data = JSON.parse(xhr.responseText);
+    if (data.status === 'ok') {
+      var questions = data.data.questions || data.data.response || [];
+      if (Array.isArray(questions)) {
+        alert('Interview Questions for ' + empName + ':\n\n' + questions.map(function(q, i) { return (i+1) + '. ' + q; }).join('\n'));
+      } else {
+        alert('Response:\n' + JSON.stringify(data.data, null, 2));
+      }
+    } else {
+      showToast('Interview failed: ' + (data.message || 'Error'), 'error');
+    }
+  };
+  xhr.onerror = function() { showToast('Network error', 'error'); };
+  xhr.send(JSON.stringify({ message: question || 'Generate interview questions' }));
+}
+
+// Onboarding plan
+function genOnboarding(empId) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/api/knowledge/agent/onboarding/');
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('X-CSRFToken', getCsrfToken());
+  xhr.onload = function() {
+    var data = JSON.parse(xhr.responseText);
+    if (data.status === 'ok') {
+      showToast('Onboarding plan generated!', 'success');
+      alert('Onboarding Plan:\n\n' + JSON.stringify(data.data, null, 2));
+    } else {
+      showToast('Failed: ' + (data.message || 'Error'), 'error');
+    }
+  };
+  xhr.onerror = function() { showToast('Network error', 'error'); };
+  xhr.send(JSON.stringify({ employee_id: empId, role: '' }));
+}
+
+// Close modal on backdrop click
+document.getElementById('add-modal').addEventListener('click', function(e) {
+  if (e.target === this) this.style.display = 'none';
+});
+</script>
+{% endblock %}

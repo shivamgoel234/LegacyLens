@@ -68,13 +68,13 @@ You can use Ruff directly from the command line:
 
 ```bash
 # Check code for issues
-ruff check konveyor/
+ruff check legacylens/
 
 # Fix issues automatically
-ruff check --fix konveyor/
+ruff check --fix legacylens/
 
 # Format code
-ruff format konveyor/
+ruff format legacylens/
 ```
 
 ### Ignoring Issues

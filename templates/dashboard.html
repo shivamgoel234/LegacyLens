@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — LegacyLens{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stat Cards -->
+<div class="stat-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:24px;margin-bottom:32px;">
+
+  <div class="stat-card" style="--stat-accent:var(--accent-blue);">
+    <div class="stat-icon" style="background:rgba(59,130,246,0.1);color:var(--accent-blue);">
+      <i data-lucide="brain" style="width:20px;height:20px;"></i>
+    </div>
+    <div class="stat-value" id="fact-count">{{ fact_count }}</div>
+    <div class="stat-label">Knowledge Facts</div>
+  </div>
+
+  <div class="stat-card" style="--stat-accent:var(--accent-amber);">
+    <div class="stat-icon" style="background:rgba(245,158,11,0.1);color:var(--accent-amber);">
+      <i data-lucide="alert-triangle" style="width:20px;height:20px;"></i>
+    </div>
+    <div class="stat-value" id="gap-count">{{ gap_count }}</div>
+    <div class="stat-label">Knowledge Gaps</div>
+  </div>
+
+  <div class="stat-card" style="--stat-accent:var(--accent-purple);">
+    <div class="stat-icon" style="background:rgba(139,92,246,0.1);color:var(--accent-purple);">
+      <i data-lucide="users" style="width:20px;height:20px;"></i>
+    </div>
+    <div class="stat-value" id="employee-count">{{ employee_count }}</div>
+    <div class="stat-label">Employees</div>
+  </div>
+
+  <div class="stat-card" style="--stat-accent:var(--accent-green);">
+    <div class="stat-icon" style="background:rgba(16,185,129,0.1);color:var(--accent-green);">
+      <i data-lucide="file-text" style="width:20px;height:20px;"></i>
+    </div>
+    <div class="stat-value" id="doc-count">{{ document_count }}</div>
+    <div class="stat-label">Documents</div>
+  </div>
+
+  <!-- Supermemory Live Memory Count -->
+  <div class="stat-card" style="--stat-accent:#7c3aed;border:1px solid rgba(124,58,237,0.3);">
+    <div class="stat-icon" style="background:rgba(124,58,237,0.12);color:#7c3aed;">
+      <i data-lucide="database" style="width:20px;height:20px;"></i>
+    </div>
+    <div class="stat-value" id="sm-memory-count" style="color:#a78bfa;">—</div>
+    <div class="stat-label">Supermemory Entries</div>
+    <div style="margin-top:6px;">
+      <span id="sm-status-badge" style="display:inline-flex;align-items:center;gap:4px;font-size:0.65rem;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(100,116,139,0.2);color:var(--text-muted);">
+        <span id="sm-status-dot" style="width:6px;height:6px;border-radius:50%;background:#64748b;"></span>
+        <span id="sm-status-text">Connecting…</span>
+      </span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Row: Recent Activity + Quick Actions -->
+<div style="display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:start;">
+
+  <!-- Recent Knowledge Facts -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Recent Knowledge</span>
+      <a href="/knowledge/" class="btn btn-sm btn-secondary">View Graph</a>
+    </div>
+    <div id="activity-list">
+      {% if recent_facts %}
+        {% for fact in recent_facts %}
+        <div class="activity-item">
+          <div class="activity-dot" style="background:var(--accent-blue);"></div>
+          <div class="activity-text">
+            <span>{{ fact.summary|default:fact.content|truncatechars:80 }}</span>
+            <div style="margin-top:4px;display:flex;gap:6px;">
+              <span class="badge badge-{{ fact.category }}">{{ fact.category }}</span>
+              <span class="badge badge-{{ fact.status }}">{{ fact.status }}</span>
+            </div>
+          </div>
+          <div class="activity-time">{{ fact.created_at|timesince }} ago</div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div style="text-align:center;padding:32px;color:var(--text-muted);">
+          <i data-lucide="inbox" style="width:32px;height:32px;margin:0 auto 12px;display:block;"></i>
+          <p>No knowledge facts yet. Upload a document to get started.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div style="display:flex;flex-direction:column;gap:16px;">
+    <div class="card-title" style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:4px;">Quick Actions</div>
+
+    <a href="/documents/" class="action-card" style="text-decoration:none;">
+      <div class="action-icon"><i data-lucide="upload" style="width:28px;height:28px;"></i></div>
+      <div>
+        <div class="action-title">Upload Document</div>
+        <div class="action-desc">Extract knowledge from PDFs, Docs, Markdown</div>
+      </div>
+    </a>
+
+    <a href="/chat/" class="action-card" style="text-decoration:none;">
+      <div class="action-icon"><i data-lucide="message-circle" style="width:28px;height:28px;"></i></div>
+      <div>
+        <div class="action-title">Ask the Agent</div>
+        <div class="action-desc">Query organizational memory with natural language</div>
+      </div>
+    </a>
+
+    <a href="/knowledge/" class="action-card" style="text-decoration:none;">
+      <div class="action-icon"><i data-lucide="git-fork" style="width:28px;height:28px;"></i></div>
+      <div>
+        <div class="action-title">View Knowledge Map</div>
+        <div class="action-desc">Explore the interactive D3.js knowledge graph</div>
+      </div>
+    </a>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+  'use strict';
+
+  // Fetch Supermemory health from /healthz/ and update the stat card
+  function refreshSupermemoryStats() {
+    fetch('/healthz/')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var sm = data.supermemory || {};
+        var status = sm.status || 'unknown';
+        var count  = sm.memory_count || 0;
+        var isOk   = status === 'connected';
+
+        var countEl  = document.getElementById('sm-memory-count');
+        var dotEl    = document.getElementById('sm-status-dot');
+        var textEl   = document.getElementById('sm-status-text');
+        var badgeEl  = document.getElementById('sm-status-badge');
+
+        if (countEl) countEl.textContent = count.toLocaleString();
+
+        if (isOk) {
+          if (dotEl)   dotEl.style.background   = '#10b981';
+          if (textEl)  textEl.textContent        = 'Local ● Connected';
+          if (badgeEl) {
+            badgeEl.style.background = 'rgba(16,185,129,0.12)';
+            badgeEl.style.color      = '#10b981';
+          }
+        } else {
+          if (dotEl)   dotEl.style.background   = '#ef4444';
+          if (textEl)  textEl.textContent        = 'Offline — run: npx supermemory local';
+          if (badgeEl) {
+            badgeEl.style.background = 'rgba(239,68,68,0.12)';
+            badgeEl.style.color      = '#ef4444';
+          }
+        }
+      })
+      .catch(function() {
+        var textEl = document.getElementById('sm-status-text');
+        if (textEl) textEl.textContent = 'Unreachable';
+      });
+  }
+
+  // Run immediately and then every 30 seconds
+  refreshSupermemoryStats();
+  setInterval(refreshSupermemoryStats, 30000);
+})();
+</script>
+{% endblock %}

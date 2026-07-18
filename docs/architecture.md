@@ -1,18 +1,18 @@
-# Konveyor Architecture (v2.0)
+# legacylens Architecture (v2.0)
 
 ## Table of Contents
 
-- [Konveyor Architecture (v2.0)](#konveyor-architecture-v20)
+- [legacylens Architecture (v2.0)](#legacylens-architecture-v20)
   - [Table of Contents](#table-of-contents)
   - [1. Overview](#1-overview)
   - [2. High-Level Architecture](#2-high-level-architecture)
   - [3. Module Descriptions](#3-module-descriptions)
-    - [3.1 konveyor/apps/documents {#konveyorappsdocuments}](#31-konveyorappsdocuments-konveyorappsdocuments)
-    - [3.2 konveyor/apps/search {#konveyorappssearch}](#32-konveyorappssearch-konveyorappssearch)
-    - [3.3 konveyor/apps/rag {#konveyorappsrag}](#33-konveyorappsrag-konveyorappsrag)
-    - [3.4 konveyor/apps/bot {#konveyorappsbot}](#34-konveyorappsbot-konveyorappsbot)
-    - [3.5 konveyor/core {#konveyorcore}](#35-konveyorcore-konveyorcore)
-    - [3.6 Konveyor-infra {#konveyor-infra}](#36-konveyor-infra-konveyor-infra)
+    - [3.1 legacylens/apps/documents {#legacylensappsdocuments}](#31-legacylensappsdocuments-legacylensappsdocuments)
+    - [3.2 legacylens/apps/search {#legacylensappssearch}](#32-legacylensappssearch-legacylensappssearch)
+    - [3.3 legacylens/apps/rag {#legacylensappsrag}](#33-legacylensappsrag-legacylensappsrag)
+    - [3.4 legacylens/apps/bot {#legacylensappsbot}](#34-legacylensappsbot-legacylensappsbot)
+    - [3.5 legacylens/core {#legacylenscore}](#35-legacylenscore-legacylenscore)
+    - [3.6 legacylens-infra {#legacylens-infra}](#36-legacylens-infra-legacylens-infra)
     - [3.7 tests {#tests}](#37-tests-tests)
   - [4. Data Flow {#data-flow}](#4-data-flow-data-flow)
   - [5. Deployment \& Infrastructure {#deployment--infrastructure}](#5-deployment--infrastructure-deployment--infrastructure)
@@ -23,7 +23,7 @@
 
 ## 1. Overview
 
-Konveyor is an AI-driven knowledge discovery and onboarding platform built on Django and Azure. It aggregates documents, indexes them for vector search, and provides RAG (Retrieve–Augment–Generate) capabilities via Azure OpenAI.
+legacylens is an AI-driven knowledge discovery and onboarding platform built on Django and Azure. It aggregates documents, indexes them for vector search, and provides RAG (Retrieve–Augment–Generate) capabilities via Azure OpenAI.
 
 Key technologies:
 - Django REST Framework for APIs
@@ -39,7 +39,7 @@ Key technologies:
 ```mermaid
 graph TD
   UI[User & Bots]
-  UI -->|HTTP/REST| API[Konveyor API]
+  UI -->|HTTP/REST| API[legacylens API]
   subgraph Backend[Django]
     API --> DocsApp((Documents App))
     API --> SearchApp((Search App))
@@ -76,12 +76,12 @@ graph TD
 
 ## 3. Module Descriptions
 
-### 3.1 konveyor/apps/documents {#konveyorappsdocuments}
+### 3.1 legacylens/apps/documents {#legacylensappsdocuments}
 Handles document ingestion, parsing (PDF, DOCX, Markdown, text), chunking, Blob upload, and indexing via Django adapter over core logic.
 
 **Structure**:
 ```text
-konveyor/apps/documents/
+legacylens/apps/documents/
 ├─ apps.py                 # Django app configuration
 ├─ config.py               # Document settings (extensions, chunk sizes)
 ├─ urls.py                 # HTTP routes (health check, upload_document)
@@ -102,12 +102,12 @@ konveyor/apps/documents/
 - `DjangoDocumentService`: delegates parsing, chunking, and storage to core `DocumentService`
 - `Document` & `DocumentChunk` models: store metadata and chunk content
 
-### 3.2 konveyor/apps/search {#konveyorappssearch}
+### 3.2 legacylens/apps/search {#legacylensappssearch}
 Manages semantic search and document indexing via REST API endpoints.
 
 **Structure**:
 ```text
-konveyor/apps/search/
+legacylens/apps/search/
 ├─ admin.py                # Django admin configuration
 ├─ apps.py                 # Django app configuration
 ├─ models.py               # `SearchDocument` model tracking indexing status
@@ -127,12 +127,12 @@ konveyor/apps/search/
 - `SearchService`: semantic and hybrid search logic via core service
 - `SearchDocument`: Django model recording index status and metadata
 
-### 3.3 konveyor/apps/rag {#konveyorappsrag}
+### 3.3 legacylens/apps/rag {#legacylensappsrag}
 Orchestrates RAG workflows using conversation management and core service.
 
 **Structure**:
 ```text
-konveyor/apps/rag/
+legacylens/apps/rag/
 ├─ models.py               # `ConversationManager`, message type constants
 ├─ urls.py                 # Router registration for `ConversationViewSet`
 ├─ views.py                # `ConversationViewSet` (create, ask, history)
@@ -143,14 +143,14 @@ konveyor/apps/rag/
 - `ConversationManager`: persists messages via `AzureStorageManager`
 - Core `RAGService`: retrieves context, formats prompts, and generates OpenAI chat responses
 
-### 3.4 konveyor/apps/bot {#konveyorappsbot}
+### 3.4 legacylens/apps/bot {#legacylensappsbot}
 Handles Bot Framework and Slack integration for chat interactions.
 
 **Structure**:
 ```text
-konveyor/apps/bot/
+legacylens/apps/bot/
 ├─ app.py                     # Bot entrypoint (`/api/messages`) with BotFrameworkAdapter
-├─ bot.py                     # `KonveyorBot` class implementing activity logic
+├─ bot.py                     # `legacylensBot` class implementing activity logic
 ├─ initialize_slack.py        # Slack app initialization
 ├─ setup_secure_storage.py    # Secure credential storage setup
 ├─ services/
@@ -165,12 +165,12 @@ konveyor/apps/bot/
 - `ADAPTER` & `BOT` in `app.py`: configure BotFrameworkAdapter and bot handler
 - Slack initializer and service modules for multi-platform support
 
-### 3.5 konveyor/core {#konveyorcore}
+### 3.5 legacylens/core {#legacylenscore}
 Contains shared utilities, Azure adapters, and core business logic.
 
 **Structure**:
 ```text
-konveyor/core/
+legacylens/core/
 ├─ azure_utils/
 │  ├─ config.py        # `AzureConfig` for environment variable management
 │  ├─ clients.py       # `AzureClientManager` for service clients (OpenAI, Search)
@@ -196,12 +196,12 @@ konveyor/core/
 - `AzureConfig`, `AzureClientManager`, `AzureService`
 - Core services: `DocumentService`, `SearchService`, `RAGService`, `ContextService`, `RAGPromptManager`
 
-### 3.6 Konveyor-infra {#konveyor-infra}
+### 3.6 legacylens-infra {#legacylens-infra}
 Infrastructure-as-Code for Azure resource provisioning.
 
 **Structure**:
 ```text
-Konveyor-infra/
+legacylens-infra/
 ├─ backend/              # Terraform backend configs
 ├─ modules/              # Reusable Terraform modules
 ├─ environments/         # test/dev/prod configs

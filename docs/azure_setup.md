@@ -21,7 +21,7 @@ pip install azure-identity azure-keyvault-secrets openai azure-search-documents
 
 4. Basic usage:
 ```python
-from konveyor.config.azure import AzureConfig
+from legacylens.config.azure import AzureConfig
 
 azure = AzureConfig()
 openai_client = azure.get_openai_client()
@@ -45,18 +45,18 @@ For local development, you'll need to manually set:
 ### Get Resource Information
 ```bash
 # Get OpenAI Endpoint
-az cognitiveservices account show --name konveyor-openai \
-    --resource-group konveyor-rg \
+az cognitiveservices account show --name legacylens-openai \
+    --resource-group legacylens-rg \
     --query properties.endpoint -o tsv
 
 # Get Cognitive Search Endpoint
-az search service show --name konveyor-search \
-    --resource-group konveyor-rg \
+az search service show --name legacylens-search \
+    --resource-group legacylens-rg \
     --query properties.hostingInfo.publicEndpoint -o tsv
 
 # Get Key Vault URL
-az keyvault show --name konveyor-kv \
-    --resource-group konveyor-rg \
+az keyvault show --name legacylens-kv \
+    --resource-group legacylens-rg \
     --query properties.vaultUri -o tsv
 
 # Get Tenant ID
@@ -67,23 +67,23 @@ az account show --query tenantId -o tsv
 ```bash
 # One-line export commands
 export AZURE_TENANT_ID=$(az account show --query tenantId -o tsv)
-export AZURE_KEY_VAULT_URL=$(az keyvault show --name konveyor-kv \
-    --resource-group konveyor-rg --query properties.vaultUri -o tsv)
-export AZURE_OPENAI_ENDPOINT=$(az cognitiveservices account show --name konveyor-openai \
-    --resource-group konveyor-rg --query properties.endpoint -o tsv)
-export AZURE_COGNITIVE_SEARCH_ENDPOINT=$(az search service show --name konveyor-search \
-    --resource-group konveyor-rg --query properties.hostingInfo.publicEndpoint -o tsv)
+export AZURE_KEY_VAULT_URL=$(az keyvault show --name legacylens-kv \
+    --resource-group legacylens-rg --query properties.vaultUri -o tsv)
+export AZURE_OPENAI_ENDPOINT=$(az cognitiveservices account show --name legacylens-openai \
+    --resource-group legacylens-rg --query properties.endpoint -o tsv)
+export AZURE_COGNITIVE_SEARCH_ENDPOINT=$(az search service show --name legacylens-search \
+    --resource-group legacylens-rg --query properties.hostingInfo.publicEndpoint -o tsv)
 ```
 
 ### Getting API Keys (if not using managed identity)
 ```bash
 # Get OpenAI API Key
-az cognitiveservices account keys list --name konveyor-openai \
-    --resource-group konveyor-rg --query 'key1' -o tsv
+az cognitiveservices account keys list --name legacylens-openai \
+    --resource-group legacylens-rg --query 'key1' -o tsv
 
 # Get Cognitive Search Admin Key
-az search admin-key show --service-name konveyor-search \
-    --resource-group konveyor-rg --query 'primaryKey' -o tsv
+az search admin-key show --service-name legacylens-search \
+    --resource-group legacylens-rg --query 'primaryKey' -o tsv
 ```
 
 ## TODO

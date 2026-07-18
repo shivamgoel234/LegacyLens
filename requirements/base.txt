@@ -1,36 +1,11 @@
 Django>=5.0.0
-psycopg2-binary>=2.9.9
 python-dotenv>=1.0.0
-langchain>=0.1.0
-
-# Security fixes for vulnerable dependencies
-h11>=0.16.0  # Fix for CVE-2025-43859
-jsonpickle>=3.0.0  # Upgrade from vulnerable 1.4.2 (CVE-2020-22083)
-
-# Azure packages
-azure-identity>=1.15.0
-azure-core
-azure-ai-documentintelligence
-azure-ai-formrecognizer
-azure-search-documents
-azure-storage-blob
-azure-keyvault-secrets
-
-# OpenAI
 openai>=1.12.0
-
-# Semantic Kernel
-semantic-kernel>=0.9.0
-
-# Document processing
+supermemory>=0.1.0
 beautifulsoup4>=4.12.0
 python-docx>=0.8.11
 PyPDF2>=3.0.0
 markdown>=3.5.0
-
-# Optional storage backends
-pymongo>=4.6.0
-redis>=5.0.0
-
-# requirements for web server
-gunicorn>=22.0.0
+djangorestframework>=3.15.0
+networkx>=3.2.0
+requests>=2.31.0

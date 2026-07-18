@@ -1,6 +1,6 @@
 # Azure Infrastructure Setup
 
-This document provides an overview of the Azure infrastructure setup for the Konveyor project.
+This document provides an overview of the Azure infrastructure setup for the legacylens project.
 
 ## Resources Provisioned
 
@@ -38,10 +38,10 @@ To run the application locally:
 
 ```bash
 # Development environment
-docker-compose up konveyor-dev
+docker-compose up legacylens-dev
 
 # Production-like environment
-docker-compose up konveyor-prod
+docker-compose up legacylens-prod
 ```
 
 ## Troubleshooting

@@ -1,9 +1,9 @@
-# Konveyor Project Directory Structure
+# legacylens Project Directory Structure
 
 ## Core Directory Structure
 
 ```
- konveyor/
+ legacylens/
  ├── apps/              # Django applications (UI, API endpoints, Django-specific logic)
  │   ├── documents/     # Document management Django app
  │   │   ├── services/  # Django-specific services/adapters
@@ -64,7 +64,7 @@
 
 ## Core/Azure Utils Module (`core/azure_utils/`) Details
 
-The `core/azure_utils` module contains foundational, shared utilities for interacting with Azure services across the Konveyor project.
+The `core/azure_utils` module contains foundational, shared utilities for interacting with Azure services across the legacylens project.
 
 ### Files Overview
 
@@ -88,7 +88,7 @@ The `core/azure_adapters` module contains specific, detailed implementations or 
 
 ## Apps/Documents Module Details
 
-The `apps/documents` module handles document management and processing in the Konveyor project.
+The `apps/documents` module handles document management and processing in the legacylens project.
 
 ### Key Components
 

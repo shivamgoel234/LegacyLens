@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Knowledge Gaps — LegacyLens{% endblock %}
+{% block page_title %}Knowledge Gaps{% endblock %}
+
+{% block content %}
+<!-- Summary Stats -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;">
+  {% for severity, color in gaps_summary.items|default:'' %}
+  {% endfor %}
+  <div class="stat-card" style="--stat-accent:var(--accent-red);padding:16px;">
+    <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Critical</div>
+    <div style="font-size:1.5rem;font-weight:700;color:var(--accent-red);" id="count-critical">
+      {{ gaps|length|default:0 }}
+    </div>
+  </div>
+  <div class="stat-card" style="--stat-accent:var(--accent-amber);padding:16px;">
+    <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">High</div>
+    <div style="font-size:1.5rem;font-weight:700;color:var(--accent-amber);" id="count-high">0</div>
+  </div>
+  <div class="stat-card" style="--stat-accent:var(--accent-blue);padding:16px;">
+    <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Medium</div>
+    <div style="font-size:1.5rem;font-weight:700;color:var(--accent-blue);" id="count-medium">0</div>
+  </div>
+  <div class="stat-card" style="--stat-accent:var(--text-muted);padding:16px;">
+    <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Low</div>
+    <div style="font-size:1.5rem;font-weight:700;color:var(--text-muted);" id="count-low">0</div>
+  </div>
+</div>
+
+<!-- Actions Bar -->
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+  <h3 style="font-size:0.875rem;font-weight:600;color:var(--text-secondary);">
+    {{ gaps|length }} gap{{ gaps|length|pluralize }} detected
+  </h3>
+  <button class="btn btn-primary" id="detect-gaps-btn">
+    <i data-lucide="search" style="width:16px;height:16px;"></i>
+    Detect New Gaps
+  </button>
+</div>
+
+<!-- Gaps List -->
+{% if gaps %}
+<div style="display:flex;flex-direction:column;gap:16px;" id="gaps-list">
+  {% for gap in gaps %}
+  <div class="gap-card {{ gap.severity }}" id="gap-{{ gap.id }}">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <span class="badge badge-{{ gap.severity }}">{{ gap.severity }}</span>
+        <span class="badge" style="background:rgba(100,116,139,0.12);color:var(--text-muted);">{{ gap.get_status_display }}</span>
+      </div>
+      {% if gap.status == 'detected' or gap.status == 'asked' %}
+      <button class="btn btn-sm btn-secondary" onclick="resolveGap('{{ gap.id }}')">
+        <i data-lucide="check" style="width:12px;height:12px;"></i>
+        Resolve
+      </button>
+      {% endif %}
+    </div>
+    <h4 style="font-size:0.95rem;font-weight:600;margin-bottom:8px;">{{ gap.title }}</h4>
+    <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.5;">{{ gap.description|truncatechars:200 }}</p>
+    {% if gap.suggested_question %}
+    <div style="margin-top:12px;padding:10px 14px;background:rgba(59,130,246,0.06);border-radius:6px;border-left:3px solid var(--accent-blue);">
+      <div style="font-size:0.7rem;color:var(--accent-blue);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">Suggested Question</div>
+      <p style="font-size:0.85rem;color:var(--text-primary);">{{ gap.suggested_question }}</p>
+    </div>
+    {% endif %}
+    {% if gap.assigned_employee %}
+    <div style="margin-top:10px;font-size:0.8rem;color:var(--text-muted);">
+      Assigned to: <strong>{{ gap.assigned_employee.name }}</strong>
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div style="text-align:center;padding:64px;color:var(--text-muted);">
+  <i data-lucide="check-circle" style="width:48px;height:48px;margin:0 auto 16px;display:block;color:var(--accent-green);opacity:0.7;"></i>
+  <p style="font-size:1rem;font-weight:500;margin-bottom:8px;color:var(--text-primary);">No gaps detected</p>
+  <p style="font-size:0.85rem;">Upload documents and run gap detection to find missing knowledge.</p>
+  <button class="btn btn-primary" id="detect-gaps-btn-empty" style="margin-top:20px;">
+    Run Gap Detection
+  </button>
+</div>
+{% endif %}
+
+<script>
+// Count gaps by severity
+document.addEventListener('DOMContentLoaded', () => {
+  const cards = document.querySelectorAll('.gap-card');
+  const counts = {critical:0, high:0, medium:0, low:0};
+  cards.forEach(c => { const s = c.classList[1]; if (counts[s] !== undefined) counts[s]++; });
+  Object.entries(counts).forEach(([k,v]) => {
+    const el = document.getElementById(`count-${k}`);
+    if (el) el.textContent = v;
+  });
+});
+
+// Detect new gaps
+document.querySelectorAll('#detect-gaps-btn, #detect-gaps-btn-empty').forEach(btn => {
+  btn?.addEventListener('click', async () => {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Detecting...';
+    const resp = await fetch('/api/knowledge/agent/gaps/detect/', {
+      method: 'POST',
+      headers: {'X-CSRFToken': getCsrfToken(), 'Content-Type': 'application/json'},
+      body: JSON.stringify({})
+    });
+    const data = await resp.json();
+    if (data.status === 'ok') {
+      showToast(`Detected ${data.data?.gaps_created || 0} new gap(s)`, 'success');
+      setTimeout(() => location.reload(), 1500);
+    } else {
+      showToast('Gap detection failed: ' + data.message, 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i data-lucide="search" style="width:16px;height:16px;"></i> Detect New Gaps';
+      lucide.createIcons();
+    }
+  });
+});
+
+// Resolve gap
+async function resolveGap(gapId) {
+  const answer = prompt('Enter the resolution or answer for this knowledge gap:');
+  if (!answer) return;
+  const resp = await fetch(`/api/knowledge/gaps/${gapId}/resolve/`, {
+    method: 'POST',
+    headers: {'X-CSRFToken': getCsrfToken(), 'Content-Type': 'application/json'},
+    body: JSON.stringify({answer})
+  });
+  const data = await resp.json();
+  if (data.status === 'ok') {
+    showToast('Gap resolved and new fact created!', 'success');
+    document.getElementById(`gap-${gapId}`)?.remove();
+  } else {
+    showToast('Failed to resolve: ' + data.message, 'error');
+  }
+}
+</script>
+{% endblock %}

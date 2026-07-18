@@ -15,7 +15,7 @@ def main():
     load_dotenv(env_path)
 
     # Default to development settings
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "konveyor.settings.development")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "legacylens.settings.development")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

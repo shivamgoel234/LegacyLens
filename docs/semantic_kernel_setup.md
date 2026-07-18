@@ -2,7 +2,7 @@
 
 ## 1. Directory Structure
 
-- `konveyor/skills/` contains Semantic Kernel modules:
+- `legacylens/skills/` contains Semantic Kernel modules:
   - `__init__.py`: Package initialization.
   - `setup.py`: Core Kernel creation and Azure OpenAI integration.
 
@@ -25,7 +25,7 @@ Set required environment variables (or store secrets in Key Vault):
 ## 4. Usage Example
 
 ```python
-from konveyor.skills.setup import create_kernel
+from legacylens.skills.setup import create_kernel
 
 # Initialize kernel
 kernel = create_kernel()
@@ -47,5 +47,5 @@ print(mem.get('key'))  # 'value'
 
 ## 6. Next Steps
 
-- Add skill modules under `konveyor/skills/`.
+- Add skill modules under `legacylens/skills/`.
 - Configure persistent memory stores for production.

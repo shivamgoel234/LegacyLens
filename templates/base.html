@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LegacyLens — Organizational Memory Agent for capturing and onboarding knowledge">
+  <title>{% block title %}LegacyLens{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/legacylens.css' %}">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h1>LegacyLens</h1>
+      <p class="subtitle">Organizational Memory</p>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'core:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        <i data-lucide="layout-dashboard" class="nav-icon"></i>
+        Dashboard
+      </a>
+      <a href="{% url 'core:knowledge_graph' %}" class="nav-link {% if request.resolver_match.url_name == 'knowledge_graph' %}active{% endif %}">
+        <i data-lucide="git-fork" class="nav-icon"></i>
+        Knowledge Graph
+      </a>
+      <a href="{% url 'core:chat' %}" class="nav-link {% if request.resolver_match.url_name == 'chat' %}active{% endif %}">
+        <i data-lucide="message-square" class="nav-icon"></i>
+        Ask LegacyLens
+      </a>
+      <a href="{% url 'core:documents' %}" class="nav-link {% if request.resolver_match.url_name == 'documents' %}active{% endif %}">
+        <i data-lucide="file-text" class="nav-icon"></i>
+        Documents
+      </a>
+      <a href="{% url 'core:employees' %}" class="nav-link {% if request.resolver_match.url_name == 'employees' %}active{% endif %}">
+        <i data-lucide="users" class="nav-icon"></i>
+        Employees
+      </a>
+      <a href="{% url 'core:gaps' %}" class="nav-link {% if request.resolver_match.url_name == 'gaps' %}active{% endif %}">
+        <i data-lucide="alert-triangle" class="nav-icon"></i>
+        Knowledge Gaps
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <header class="top-bar">
+      <h2>{% block page_title %}LegacyLens{% endblock %}</h2>
+    </header>
+    <main class="content">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container" class="toast-container"></div>
+
+<script>
+  // Initialize Lucide icons
+  lucide.createIcons();
+
+  // Global toast utility
+  function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
+  }
+
+  // CSRF token helper
+  function getCsrfToken() {
+    return document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith('csrftoken='))?.split('=')[1] || '';
+  }
+</script>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

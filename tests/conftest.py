@@ -1,4 +1,4 @@
-"""Test configuration for Konveyor."""
+"""Test configuration for legacylens."""
 
 import pytest  # noqa: F401
 

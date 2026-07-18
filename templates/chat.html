@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Ask LegacyLens — Chat{% endblock %}
+{% block page_title %}Ask LegacyLens{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+  <div class="chat-messages" id="chat-messages">
+    <!-- Welcome message -->
+    <div class="chat-bubble agent">
+      <div class="bubble-label">LegacyLens</div>
+      <p>👋 Hello! I'm LegacyLens, your organizational memory agent.</p>
+      <p style="margin-top:8px;">I can help you find facts about your organization's architecture, processes, decisions, and more. Ask me anything:</p>
+      <ul style="margin-top:10px;padding-left:16px;color:var(--text-secondary);font-size:0.85rem;">
+        <li>• "Which database do we use?"</li>
+        <li>• "What's our deployment process?"</li>
+        <li>• "Who owns the payment service?"</li>
+        <li>• "What changed in Q3 2023?"</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="chat-input-area">
+    <textarea id="chat-input" placeholder="Ask about your organization..." rows="2"></textarea>
+    <button class="btn btn-primary" id="send-btn" style="height:44px;">
+      <i data-lucide="send" style="width:16px;height:16px;"></i>
+      Send
+    </button>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/chat.js' %}"></script>
+{% endblock %}
