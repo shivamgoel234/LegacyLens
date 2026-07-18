@@ -1,0 +1,60 @@
+# render.yaml — Render Blueprint (Infrastructure as Code)
+# Docs: https://render.com/docs/blueprint-spec
+#
+# This file lets Render auto-configure your service from GitHub.
+# Just click "New Blueprint Instance" on render.com and point it here.
+
+services:
+  - type: web
+    name: legacylens
+    runtime: python
+    plan: free                          # Free tier — no credit card needed
+    region: oregon                      # Closest to India latency-wise
+    branch: main
+
+    # --- Build ---
+    buildCommand: "./build.sh"
+
+    # --- Start ---
+    startCommand: >
+      gunicorn legacylens.wsgi:application
+      --bind 0.0.0.0:$PORT
+      --workers 2
+      --timeout 120
+      --log-level info
+
+    # --- Environment ---
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: legacylens.settings.render
+
+      - key: DJANGO_SECRET_KEY
+        generateValue: true             # Render auto-generates a secure key
+
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+
+      # --- Supermemory Cloud ---
+      # Get these from https://supermemory.ai → Settings → API Keys
+      - key: SUPERMEMORY_API_KEY
+        sync: false                     # You enter this manually in Render dashboard
+
+      - key: SUPERMEMORY_BASE_URL
+        value: https://api.supermemory.ai   # Supermemory Cloud endpoint
+
+      # --- LLM Provider (Vercel AI Gateway) ---
+      - key: OPENAI_API_KEY
+        sync: false                     # You enter this manually
+
+      - key: OPENAI_BASE_URL
+        value: https://ai-gateway.vercel.sh/v1
+
+      - key: OPENAI_MODEL
+        value: openai/gpt-4o-mini
+
+      # --- Organization ---
+      - key: LEGACYLENS_ORG_NAME
+        value: LegacyLens Demo
+
+    # --- Health check ---
+    healthCheckPath: /healthz/
